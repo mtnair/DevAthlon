@@ -1,6 +1,7 @@
 package me.Pangasius.minigames.game;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
@@ -32,6 +33,8 @@ public abstract class Game {
 		
 		teleportToSpawns();
 		initScoreboard();
+		clearInventories();
+		fillInventories();
 		
 		waitingPeriodScheduler = Bukkit.getScheduler().scheduleAsyncRepeatingTask(plugin, new Runnable() {
 			
@@ -52,6 +55,7 @@ public abstract class Game {
 				
 				if(waitingPeriod == 0){
 					
+					broadcastToPlayers(Messages.prefix + " Das Spiel startet jetzt!");
 					running = true;
 					begin();
 					fillInventories();
@@ -70,12 +74,13 @@ public abstract class Game {
 	public void stop(){
 		
 		running = false;
-		end();
 		teleportPlayersToLobby();
+		clearInventories();
 		
 		if(plugin.getPlayers().getPlayer1() != null) Bukkit.getPlayer(plugin.getPlayers().getPlayer1()).getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
 		if(plugin.getPlayers().getPlayer2() != null) Bukkit.getPlayer(plugin.getPlayers().getPlayer2()).getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
-		plugin.getPlayers().clear();
+		scoreboard.clearSlot(DisplaySlot.SIDEBAR);
+		end();
 		
 	}
 	
@@ -101,7 +106,7 @@ public abstract class Game {
 	
 	public boolean isRunning(){
 		
-		return running;
+		return running && waitingPeriod == 0;
 		
 	}
 	
@@ -126,6 +131,7 @@ public abstract class Game {
 		player1.setLevel(0);
 		player1.setExp(0);
 		player1.getInventory().setArmorContents(null);
+		player1.setGameMode(GameMode.SURVIVAL);
 		
 		Player player2 = Bukkit.getPlayer(plugin.getPlayers().getPlayer2());
 		
@@ -133,6 +139,7 @@ public abstract class Game {
 		player2.setLevel(0);
 		player2.setExp(0);
 		player2.getInventory().setArmorContents(null);
+		player2.setGameMode(GameMode.SURVIVAL);
 		
 	}
 

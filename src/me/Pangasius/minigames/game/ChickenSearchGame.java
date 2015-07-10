@@ -10,10 +10,14 @@ import me.Pangasius.minigames.Messages;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Chicken;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -33,6 +37,8 @@ public class ChickenSearchGame extends Game{
 	
 	private Score scoreboardPlayer1;
 	private Score scoreboardPlayer2;
+	
+	private ItemStack stick;
 	
 	public ChickenSearchGame(){
 		super(GameType.CHICKEN_SEARCH);
@@ -58,6 +64,12 @@ public class ChickenSearchGame extends Game{
 		spawnlocations.add(loc8);
 		spawnlocations.add(loc9);
 		spawnlocations.add(loc10);
+		
+		stick = new ItemStack(Material.BLAZE_ROD);
+		stick.addUnsafeEnchantment(Enchantment.KNOCKBACK, 2);
+		ItemMeta meta = stick.getItemMeta();
+		meta.setDisplayName("§5Rückstoßstoßender Rückstoßstoßer");
+		stick.setItemMeta(meta);
 	}
 
 	@Override
@@ -69,7 +81,17 @@ public class ChickenSearchGame extends Game{
 	}
 
 	@Override
-	public void fillInventories() {}
+	public void fillInventories() {
+		
+		Player player1 = Bukkit.getPlayer(plugin.getPlayers().getPlayer1());
+		
+		player1.getInventory().addItem(stick);
+		
+		Player player2 = Bukkit.getPlayer(plugin.getPlayers().getPlayer2());
+		
+		player2.getInventory().addItem(stick);
+		
+	}
 
 	@SuppressWarnings("deprecation")
 	@Override
@@ -155,6 +177,13 @@ public class ChickenSearchGame extends Game{
 		for(Chicken chicken : chickens.keySet()){
 			
 			chicken.remove();
+			
+		}
+		
+		if(plugin.getPlayers().isFull()){
+			
+			plugin.setGame(new SnowballFightGame());
+			plugin.getGame().start();
 			
 		}
 		

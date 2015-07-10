@@ -27,6 +27,9 @@ public class Locations{
 			chickenSearchSpawn1 = new Location(Bukkit.getWorld("world"), -643.5, 101, -225.5);
 			chickenSearchSpawn2 = chickenSearchSpawn1;
 			
+			snowballFightSpawn1 = new Location(Bukkit.getWorld("world"), 20.5, 81, -142.5);
+			snowballFightSpawn2 = new Location(Bukkit.getWorld("world"), 20.5, 81, -151.5);
+			
 		}
 		
 	}
