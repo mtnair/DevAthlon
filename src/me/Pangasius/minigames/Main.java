@@ -13,6 +13,7 @@ public class Main extends JavaPlugin{
 	
 	private Players players;
 	private Game currentGame;
+	private boolean ingame = false;
 	
 	@Override
 	public void onEnable() {
@@ -50,6 +51,12 @@ public class Main extends JavaPlugin{
 	public Players getPlayers(){
 		
 		return players;
+		
+	}
+	
+	public boolean gameIsRunning(){
+		
+		return ingame;
 		
 	}
 	
