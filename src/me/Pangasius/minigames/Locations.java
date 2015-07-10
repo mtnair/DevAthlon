@@ -7,6 +7,15 @@ public class Locations{
 	
 	private static Location lobbySpawn;
 	
+	private static Location chickenSearchSpawn1;
+	private static Location chickenSearchSpawn2;
+	
+	private static Location snowballFightSpawn1;
+	private static Location snowballFightSpawn2;
+	
+	private static Location superMarioSpawn1;
+	private static Location superMarioSpawn2;
+	
 	static{
 		
 		if(lobbySpawn == null){
@@ -27,4 +36,42 @@ public class Locations{
 		
 	}
 
+	public static Location getChickenSearchSpawn1() {
+		
+		return chickenSearchSpawn1;
+		
+	}
+
+	public static Location getChickenSearchSpawn2() {
+		
+		return chickenSearchSpawn2;
+		
+	}
+
+	public static Location getSnowballFightSpawn1() {
+		
+		return snowballFightSpawn1;
+		
+	}
+
+	public static Location getSnowballFightSpawn2() {
+		
+		return snowballFightSpawn2;
+		
+	}
+
+	public static Location getSuperMarioSpawn1() {
+		
+		return superMarioSpawn1;
+		
+	}
+
+	public static Location getSuperMarioSpawn2() {
+		
+		return superMarioSpawn2;
+		
+	}
+
+	
+	
 }
