@@ -1,6 +1,7 @@
 package me.Pangasius.minigames;
 
 import me.Pangasius.minigames.commands.FunGamesCommand;
+import me.Pangasius.minigames.game.ChickenSearchGame;
 import me.Pangasius.minigames.game.EventListener;
 import me.Pangasius.minigames.game.Game;
 import me.Pangasius.minigames.game.Players;
@@ -21,6 +22,7 @@ public class Main extends JavaPlugin{
 		instance = this;
 		
 		players = new Players();
+		currentGame = new ChickenSearchGame();
 		
 		registerCommand();
 		registerListener();

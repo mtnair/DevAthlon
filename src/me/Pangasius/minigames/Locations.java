@@ -24,7 +24,8 @@ public class Locations{
 			lobbySpawn.setYaw(180);
 			lobbySpawn.setPitch(0);
 			
-			
+			chickenSearchSpawn1 = new Location(Bukkit.getWorld("world"), -643.5, 101, -225.5);
+			chickenSearchSpawn2 = chickenSearchSpawn1;
 			
 		}
 		

@@ -2,6 +2,8 @@ package me.Pangasius.minigames.game;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Scoreboard;
 
 import me.Pangasius.minigames.Locations;
 import me.Pangasius.minigames.Main;
@@ -13,19 +15,26 @@ public abstract class Game {
 	public Main plugin = Main.getMain();
 	private int waitingPeriod = 5;
 	private boolean running = false;
-	private Thread waitingPeriodThread;
+	private int waitingPeriodScheduler;
+	
+	public Scoreboard scoreboard;
 	
 	public Game(GameType type){
 		
 		this.type = type;
 		
+		scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+		
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void start(){
 		
-		waitingPeriodThread = new Thread(new Runnable() {
+		teleportToSpawns();
+		initScoreboard();
+		
+		waitingPeriodScheduler = Bukkit.getScheduler().scheduleAsyncRepeatingTask(plugin, new Runnable() {
 			
-			@SuppressWarnings("deprecation")
 			@Override
 			public void run() {
 				
@@ -42,19 +51,18 @@ public abstract class Game {
 				if(waitingPeriod == 0){
 					
 					running = true;
-					run();
+					begin();
 					fillInventories();
-					waitingPeriodThread.destroy();
+					
+					Bukkit.getScheduler().cancelTask(waitingPeriodScheduler);
 					
 				}
 				
 				waitingPeriod--;
 				
-				
 			}
-		});
-		
-		waitingPeriodThread.start();
+
+		}, 0, 20);
 		
 	}
 	
@@ -64,6 +72,8 @@ public abstract class Game {
 		end();
 		teleportPlayersToLobby();
 		
+		if(plugin.getPlayers().getPlayer1() != null) Bukkit.getPlayer(plugin.getPlayers().getPlayer1()).getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
+		if(plugin.getPlayers().getPlayer2() != null) Bukkit.getPlayer(plugin.getPlayers().getPlayer2()).getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
 		
 	}
 	
@@ -76,8 +86,10 @@ public abstract class Game {
 	
 	public abstract void teleportToSpawns();
 	public abstract void fillInventories();
-	public abstract void run();
+	public abstract void begin();
 	public abstract void end();
+	public abstract void initScoreboard();
+	public abstract void updateScoreboard();
 	
 	public GameType getType(){
 		
@@ -85,9 +97,9 @@ public abstract class Game {
 		
 	}
 	
-	public boolean isWaitingPeriod(){
+	public boolean isRunning(){
 		
-		return waitingPeriod > 0;
+		return running;
 		
 	}
 	

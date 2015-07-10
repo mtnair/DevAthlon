@@ -2,6 +2,7 @@ package me.Pangasius.minigames.game;
 
 import java.util.UUID;
 
+import me.Pangasius.minigames.Locations;
 import me.Pangasius.minigames.Main;
 import me.Pangasius.minigames.Messages;
 
@@ -48,11 +49,13 @@ public class Players {
 		if(player1 == player.getUniqueId()){
 			
 			player1 = null;
+			player.teleport(Locations.getLobbySpawn());
 			Main.getMain().getGame().stop();
 			
 		}else if(player2 == player.getUniqueId()){
 			
 			player2 = null;
+			player.teleport(Locations.getLobbySpawn());
 			Main.getMain().getGame().stop();
 			
 		}else{
