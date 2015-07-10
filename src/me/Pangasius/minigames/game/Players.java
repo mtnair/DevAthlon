@@ -48,15 +48,15 @@ public class Players {
 		
 		if(player1 == player.getUniqueId()){
 			
-			player1 = null;
-			player.teleport(Locations.getLobbySpawn());
 			Main.getMain().getGame().stop();
+			player1 = null;
+			player2 = null;
 			
 		}else if(player2 == player.getUniqueId()){
 			
-			player2 = null;
-			player.teleport(Locations.getLobbySpawn());
 			Main.getMain().getGame().stop();
+			player2 = null;
+			player1 = null;
 			
 		}else{
 		
@@ -75,6 +75,13 @@ public class Players {
 	public boolean isPlaying(Player player){
 		
 		return player1 == player.getUniqueId() || player2 == player.getUniqueId();
+		
+	}
+	
+	public void clear(){
+		
+		player1 = null;
+		player2 = null;
 		
 	}
 

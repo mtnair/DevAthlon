@@ -29,7 +29,7 @@ public class ChickenSearchGame extends Game{
 	public int scorePlayer1 = 0;
 	public int scorePlayer2 = 0;
 	
-	private int spawns = 25;
+	public int spawns = 25;
 	
 	private Score scoreboardPlayer1;
 	private Score scoreboardPlayer2;
@@ -82,6 +82,8 @@ public class ChickenSearchGame extends Game{
 			@Override
 			public void run() {
 				
+				if(spawns == 0)return;
+				
 				Location eggSpawn = spawnlocations.get(r.nextInt(spawnlocations.size()));
 				
 				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
@@ -113,12 +115,12 @@ public class ChickenSearchGame extends Game{
 						
 					}
 				}, 90);
-				
+			
+				spawns--;
 			}
 			
+			
 		}, 0, 100);
-		
-		spawns--;
 		
 		Bukkit.getScheduler().scheduleAsyncRepeatingTask(plugin, new Runnable() {
 			

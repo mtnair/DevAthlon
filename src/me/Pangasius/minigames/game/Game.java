@@ -13,7 +13,7 @@ public abstract class Game {
 	
 	private GameType type;
 	public Main plugin = Main.getMain();
-	private int waitingPeriod = 5;
+	private int waitingPeriod = 6;
 	private boolean running = false;
 	private int waitingPeriodScheduler;
 	
@@ -38,6 +38,8 @@ public abstract class Game {
 			@Override
 			public void run() {
 				
+				waitingPeriod--;
+				
 				if(waitingPeriod > 1){
 					
 					broadcastToPlayers(Messages.prefix + " Das Spiel startet in " + waitingPeriod + " Sekunden!");
@@ -58,7 +60,6 @@ public abstract class Game {
 					
 				}
 				
-				waitingPeriod--;
 				
 			}
 
@@ -74,6 +75,7 @@ public abstract class Game {
 		
 		if(plugin.getPlayers().getPlayer1() != null) Bukkit.getPlayer(plugin.getPlayers().getPlayer1()).getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
 		if(plugin.getPlayers().getPlayer2() != null) Bukkit.getPlayer(plugin.getPlayers().getPlayer2()).getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
+		plugin.getPlayers().clear();
 		
 	}
 	
@@ -100,6 +102,12 @@ public abstract class Game {
 	public boolean isRunning(){
 		
 		return running;
+		
+	}
+	
+	public boolean isWaitingPeriod(){
+		
+		return waitingPeriod > 0 && waitingPeriod < 6;
 		
 	}
 	

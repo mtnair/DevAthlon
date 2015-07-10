@@ -62,6 +62,11 @@ public class Main extends JavaPlugin{
 		
 	}
 	
+	public void setGameIsRunning(boolean running){
+		
+		ingame = running;
+	}
+	
 	public static Main getMain(){
 		
 		return instance;

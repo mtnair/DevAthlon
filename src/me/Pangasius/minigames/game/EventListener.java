@@ -15,10 +15,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 
 public class EventListener implements Listener{
 	
@@ -41,7 +44,7 @@ public class EventListener implements Listener{
 			
 		}
 		
-		if(plugin.getGame().isRunning()){
+		if(plugin.getGame().isWaitingPeriod() && plugin.getGame().isRunning() && plugin.getPlayers().isPlaying(e.getPlayer())){
 			
 			if(moved(e.getFrom(), e.getTo())) e.getPlayer().teleport(e.getFrom());
 		}
@@ -114,6 +117,12 @@ public class EventListener implements Listener{
 		chicken.remove();
 		game.updateScoreboard();
 		
+		if(game.spawns == 0){
+			
+			game.stop();
+			
+		}
+		
 	}
 	
 	@EventHandler
@@ -121,6 +130,21 @@ public class EventListener implements Listener{
 		
 		e.getPlayer().teleport(Locations.getLobbySpawn());
 		
+	}
+	
+	@EventHandler
+	public void onBlockBreak(BlockBreakEvent e){
+		if(plugin.getPlayers().isPlaying(e.getPlayer()))e.setCancelled(true);
+	}
+	
+	@EventHandler
+	public void onBlockPlace(BlockPlaceEvent e){
+		if(plugin.getPlayers().isPlaying(e.getPlayer()))e.setCancelled(true);
+	}
+	
+	@EventHandler
+	public void onItemPickup(PlayerPickupItemEvent e){
+		if(plugin.getPlayers().isPlaying(e.getPlayer()))e.setCancelled(true);
 	}
 	
 	private boolean moved(Location from, Location to){
