@@ -2,6 +2,7 @@ package me.Pangasius.minigames.game;
 
 import java.util.UUID;
 
+import me.Pangasius.minigames.Main;
 import me.Pangasius.minigames.Messages;
 
 import org.bukkit.entity.Player;
@@ -39,11 +40,36 @@ public class Players {
 		
 	}
 	
-	public void leave(Player p){
+	public void leave(Player player){
 		
-		if(player1 != p.getUniqueId() && player2 != p.getUniqueId()){
+		
+		if(player1 == player.getUniqueId()){
+			
+			player1 = null;
+			Main.getMain().getGame().stop();
+			
+		}else if(player2 == player.getUniqueId()){
+			
+			player2 = null;
+			Main.getMain().getGame().stop();
+			
+		}else{
+		
+			Messages.notPlaying(player);
 			
 		}
+		
+	}
+	
+	public boolean isFull(){
+		
+		return player1 != null && player2 != null;
+		
+	}
+	
+	public boolean isPlaying(Player player){
+		
+		return player1 == player.getUniqueId() || player2 == player.getUniqueId();
 		
 	}
 
