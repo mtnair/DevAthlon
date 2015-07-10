@@ -36,6 +36,8 @@ public class Players {
 			
 		}
 		
+		Messages.joined(player);
+		
 		return true;
 		
 	}

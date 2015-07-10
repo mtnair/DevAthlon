@@ -4,6 +4,7 @@ import me.Pangasius.minigames.Main;
 import me.Pangasius.minigames.Messages;
 import me.Pangasius.minigames.game.Players;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -33,13 +34,21 @@ public class FunGamesCommand implements CommandExecutor{
 			
 		}
 		
-		if(args[0].endsWith("help")){
+		if(args[0].equalsIgnoreCase("help")){
 			
 			Messages.help(player);
 			return true;
 			
-		}else
+		}
+		
 		if(args[0].equalsIgnoreCase("join")){
+			
+			if(plugin.getPlayers().isPlaying(player)){
+				
+				Messages.alreadyPlaying(player);
+				return true;
+				
+			}
 			
 			if(plugin.getPlayers().join(player)){
 				
@@ -47,6 +56,27 @@ public class FunGamesCommand implements CommandExecutor{
 				
 			}
 			
+			return true;
+			
+		}
+		
+		if(args[0].equalsIgnoreCase("leave")){
+			
+			plugin.getPlayers().leave(player);
+			return true;
+			
+		}
+		
+		if(args[0].equalsIgnoreCase("stats")){
+			
+			if(args.length == 1){
+				
+				player.sendMessage(ChatColor.GREEN + "Deine Statistik:");
+				return true;
+				
+			}
+			
+			player.sendMessage(ChatColor.GREEN + "Die Statistik von " + args[1] + ":");
 			return true;
 			
 		}

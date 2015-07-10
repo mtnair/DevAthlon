@@ -2,6 +2,7 @@ package me.Pangasius.minigames;
 
 import net.md_5.bungee.api.ChatColor;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -41,6 +42,12 @@ public class Messages {
 		p.sendMessage(ChatColor.YELLOW + "/fungames stats <Spieler> - Zeigt die Statistik von <Spieler> an");
 		p.sendMessage(ChatColor.YELLOW + "/fungames join - Betrete das Spiel");
 		p.sendMessage(ChatColor.YELLOW + "/fungames leave - Verlasse das Spiel");
+	}
+	
+	public static void joined(Player p){
+		
+		Bukkit.broadcastMessage(prefix + p.getName() + " hat das Spiel betreten!");
+		
 	}
 
 }
