@@ -2,7 +2,6 @@ package me.Pangasius.minigames.commands;
 
 import me.Pangasius.minigames.Main;
 import me.Pangasius.minigames.Messages;
-import me.Pangasius.minigames.game.Players;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -12,11 +11,22 @@ import org.bukkit.entity.Player;
 
 public class FunGamesCommand implements CommandExecutor{
 
+	/*
+	 * Instance of the plugin
+	 */
 	
 	Main plugin = Main.getMain();
 	
+	/*
+	 * Command executor
+	 */
+	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		
+		/*
+		 * Check wheter the sender is a player
+		 */
 		
 		if(!(sender instanceof Player)){
 			
@@ -27,6 +37,10 @@ public class FunGamesCommand implements CommandExecutor{
 		
 		Player player = (Player) sender;
 		
+		/*
+		 * Print the help if no argument is given
+		 */
+		
 		if(args.length == 0){
 			
 			Messages.help(player);
@@ -34,12 +48,20 @@ public class FunGamesCommand implements CommandExecutor{
 			
 		}
 		
+		/*
+		 * Print the help
+		 */
+		
 		if(args[0].equalsIgnoreCase("help")){
 			
 			Messages.help(player);
 			return true;
 			
 		}
+		
+		/*
+		 * Let a player join the game
+		 */
 		
 		if(args[0].equalsIgnoreCase("join")){
 			
@@ -60,12 +82,20 @@ public class FunGamesCommand implements CommandExecutor{
 			
 		}
 		
+		/*
+		 * Leave the game
+		 */
+		
 		if(args[0].equalsIgnoreCase("leave")){
 			
 			plugin.getPlayers().leave(player);
 			return true;
 			
 		}
+		
+		/*
+		 * Show statistics to a player
+		 */
 		
 		if(args[0].equalsIgnoreCase("stats")){
 			

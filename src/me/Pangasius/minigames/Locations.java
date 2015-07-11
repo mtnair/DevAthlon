@@ -5,6 +5,10 @@ import org.bukkit.Location;
 
 public class Locations{
 	
+	/*
+	 * Location variables 
+	 */
+	
 	private static Location lobbySpawn;
 	
 	private static Location chickenSearchSpawn1;
@@ -17,6 +21,10 @@ public class Locations{
 	private static Location superMarioSpawn2;
 	
 	static{
+		
+		/*
+		 * Initialize Locations if they arent already
+		 */
 		
 		if(lobbySpawn == null){
 			
@@ -33,6 +41,10 @@ public class Locations{
 		}
 		
 	}
+	
+	/*
+	 *  Methods to get the locations
+	 */
 	
 	public static Location getLobbySpawn(){
 		

@@ -1,15 +1,9 @@
 package me.Pangasius.minigames.game;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import me.Pangasius.minigames.Locations;
 import me.Pangasius.minigames.Main;
 import me.Pangasius.minigames.Messages;
 import me.Pangasius.minigames.game.SnowballFightGame.Round;
-import me.Pangasius.minigames.reflection.Packets;
-import net.md_5.bungee.api.ChatColor;
-import net.minecraft.server.v1_8_R1.PacketPlayOutWorldParticles;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
@@ -23,22 +17,35 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 public class EventListener implements Listener{
 	
+	/*
+	 * Instance of the plugin
+	 */
+	
 	private Main plugin = Main.getMain();
+	
+	/*
+	 * PlayerMoveEvent
+	 */
 	
 	@EventHandler
 	public void onPlayerMove(PlayerMoveEvent e){
 		
 		if(!plugin.gameIsRunning()){
+			
+			/*
+			 * Teleport players back when they fall out of spawn
+			 */
 			
 			if(e.getTo().getY() <= 50){
 				
@@ -46,14 +53,26 @@ public class EventListener implements Listener{
 				
 			}
 			
+			/*
+			 * Play effect at players location
+			 */
+			
 			if(moved(e.getFrom(), e.getTo())) e.getPlayer().getWorld().playEffect(e.getFrom().add(0, 0.3, 0), Effect.COLOURED_DUST, 5);
 			
 		}
+		
+		/*
+		 * No moving during waiting period
+		 */
 		
 		if(plugin.getGame().isWaitingPeriod() && plugin.getGame().isRunning() && plugin.getPlayers().isPlaying(e.getPlayer())){
 			
 			if(moved(e.getFrom(), e.getTo())) e.getPlayer().teleport(e.getFrom());
 		}
+		
+		/*
+		 * Check snowball fight stats and teleport if its needed
+		 */
 		
 		if(plugin.getGame() instanceof SnowballFightGame && plugin.getGame().isRunning() && plugin.getPlayers().isPlaying(e.getPlayer())){
 			
@@ -98,20 +117,20 @@ public class EventListener implements Listener{
 		}
 	}
 	
+	/*
+	 * Listener to join the game by clicking on the sign
+	 */
+	
 	@EventHandler
 	public void onPlayerInteract(PlayerInteractEvent e){
 		
 		if(e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_BLOCK){
 			
 			
-			
 			if(e.getClickedBlock().getState() instanceof Sign){
 				
 				Sign s = (Sign) e.getClickedBlock().getState();
 				if(s.getLine(0).contains("[FunGames]") && s.getLine(2).contains("Spiel betreten")){
-					
-					s.setLine(0, "§a[FunGames]");
-					s.setLine(2, "§eSpiel betreten");
 					
 					if(plugin.getPlayers().isPlaying(e.getPlayer())){
 						
@@ -134,7 +153,10 @@ public class EventListener implements Listener{
 		
 	}
 	
-	@SuppressWarnings("deprecation")
+	/*
+	 * Listener to recognize wheter a player found a chicken
+	 */
+	
 	@EventHandler
 	public void onPlayerInteractEntity(PlayerInteractEntityEvent e){
 		
@@ -151,50 +173,23 @@ public class EventListener implements Listener{
 		Chicken chicken = (Chicken) e.getRightClicked();
 		Player player = e.getPlayer();
 		
+		/*
+		 * Increase the players score
+		 */
+		
 		if(player.getUniqueId() == plugin.getPlayers().getPlayer1()){
 			
 			game.scorePlayer1++;
-			
-			Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
-				
-				@Override
-				public void run() {
-					try{
-						ResultSet rs = plugin.getMySQL().querySQL("SELECT `chickens_found` FROM `stats` WHERE `name` = '" + Bukkit.getPlayer(plugin.getPlayers().getPlayer1()).getName() + "'");
-						int chickens_found = rs.getInt("chickens_found");
-						plugin.getMySQL().updateSQL("UPDATE `stats` SET `chickens_found` = " + (chickens_found + 1) + " WHERE `name` = '" + Bukkit.getPlayer(plugin.getPlayers().getPlayer1()).getName() + "'");
-					}catch(Exception e){
-						e.printStackTrace();
-					}
-				}
-			});
 			
 		}else{
 			
 			game.scorePlayer2++;
 			
-			Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
-				
-				@Override
-				public void run() {
-					try{
-						ResultSet rs = plugin.getMySQL().querySQL("SELECT `chickens_found` FROM `stats` WHERE `name` = '" + Bukkit.getPlayer(plugin.getPlayers().getPlayer2()).getName() + "'");
-						
-						int chickens_found = 0;
-						
-						while(rs.next()){
-							
-							chickens_found = rs.getInt("chickens_found");
-							
-						}
-						plugin.getMySQL().updateSQL("UPDATE `stats` SET `chickens_found` = " + (chickens_found + 1) + " WHERE `name` = '" + Bukkit.getPlayer(plugin.getPlayers().getPlayer2()).getName() + "'");
-					}catch(Exception e){
-						e.printStackTrace();
-					}
-				}
-			});
-			
 		}
+		
+		/*
+		 * Remove the found chicken
+		 */
 		
 		game.getChickens().remove(chicken);
 		chicken.remove();
@@ -208,27 +203,31 @@ public class EventListener implements Listener{
 		
 	}
 	
+	/*
+	 * Teleport players back to spawn when the join
+	 */
+	
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent e){
 		
 		e.getPlayer().teleport(Locations.getLobbySpawn());
 		
-		try {
-			ResultSet rs = plugin.getMySQL().querySQL("SELECT * FROM `stats` WHERE `name` = '" + e.getPlayer().getName() + "'");
-			
-			if(rs.getFetchSize() == 0){
-				
-				plugin.getMySQL().updateSQL("INSERT INTO `stats`(`name`, `chickens_found`, `chickens_games`, `chickens_wins`, `snowball_fired`, "
-						+ "`snowball_games`, `snowball_wins`) VALUES  ('" + e.getPlayer().getName() + "',0,0,0,0,0,0)");
-				
-			}
-		} catch (ClassNotFoundException e1) {
-			e1.printStackTrace();
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-		}
+	}
+	
+	/*
+	 * Leave the game if a player left during the game
+	 */
+	
+	@EventHandler
+	public void onPlayerQuit(PlayerQuitEvent e){
+		
+		if(plugin.getPlayers().isPlaying(e.getPlayer())) plugin.getPlayers().leave(e.getPlayer());
 		
 	}
+	
+	/*
+	 * No block break/place during the game
+	 */
 	
 	@EventHandler
 	public void onBlockBreak(BlockBreakEvent e){
@@ -240,10 +239,18 @@ public class EventListener implements Listener{
 		if(plugin.getPlayers().isPlaying(e.getPlayer()))e.setCancelled(true);
 	}
 	
+	/*
+	 * Cancel picking up items
+	 */
+	
 	@EventHandler
 	public void onItemPickup(PlayerPickupItemEvent e){
 		if(plugin.getPlayers().isPlaying(e.getPlayer()))e.setCancelled(true);
 	}
+	
+	/*
+	 * Stop damage
+	 */
 	
 	@SuppressWarnings("deprecation")
 	@EventHandler
@@ -276,6 +283,10 @@ public class EventListener implements Listener{
 		
 	}
 	
+	/*
+	 * Stop the changing of the food level
+	 */
+	
 	@EventHandler
 	public void onPlayerHunger(FoodLevelChangeEvent e){
 		
@@ -287,6 +298,10 @@ public class EventListener implements Listener{
 		e.setFoodLevel(20);
 		
 	}
+	
+	/*
+	 * Check wheter a player has moved or not
+	 */
 	
 	private boolean moved(Location from, Location to){
 		

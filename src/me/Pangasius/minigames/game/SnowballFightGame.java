@@ -13,6 +13,10 @@ import org.bukkit.scoreboard.Score;
 
 public class SnowballFightGame extends Game{
 
+	/*
+	 * Variables
+	 */
+	
 	public Round round = Round.ROUND1;
 	
 	public int winsPlayer1 = 0;
@@ -21,16 +25,28 @@ public class SnowballFightGame extends Game{
 	private Score scoreboardPlayer1;
 	private Score scoreboardPlayer2;
 	
+	/*
+	 * Default constructor
+	 */
+	
 	public SnowballFightGame() {
 		super(GameType.SNOWBALL_FIGHT);
 	}
 
+	/*
+	 * Teleport all players to their spawns
+	 */
+	
 	@Override
 	public void teleportToSpawns() {
 		Bukkit.getPlayer(plugin.getPlayers().getPlayer1()).teleport(Locations.getSnowballFightSpawn1());
 		Bukkit.getPlayer(plugin.getPlayers().getPlayer2()).teleport(Locations.getSnowballFightSpawn2());
 	}
-
+	
+	/*
+	 * Give each player 128 snowballs to fight with
+	 */
+	
 	@Override
 	public void fillInventories() {
 		Player player1 = Bukkit.getPlayer(plugin.getPlayers().getPlayer1());
@@ -45,11 +61,17 @@ public class SnowballFightGame extends Game{
 		
 	}
 
+	/*
+	 * Nothing to do here
+	 */
+	
 	@Override
-	public void begin() {
-		
-	}
+	public void begin() {}
 
+	/*
+	 * Check which player has won and let the game stop
+	 */
+	
 	@Override
 	public void end() {
 	
@@ -70,6 +92,10 @@ public class SnowballFightGame extends Game{
 		
 	}
 
+	/*
+	 * Initialize the scoreboard
+	 */
+	
 	@Override
 	public void initScoreboard() {
 		Objective obj = scoreboard.registerNewObjective("fungames", "sb");
@@ -86,6 +112,10 @@ public class SnowballFightGame extends Game{
 		Bukkit.getPlayer(plugin.getPlayers().getPlayer2()).setScoreboard(scoreboard);
 	}
 
+	/*
+	 * Update the scoreboard
+	 */
+	
 	@Override
 	public void updateScoreboard() {
 		
@@ -96,6 +126,10 @@ public class SnowballFightGame extends Game{
 		Bukkit.getPlayer(plugin.getPlayers().getPlayer2()).setScoreboard(scoreboard);
 		
 	}
+	
+	/*
+	 * Enum the check which round the game is currently in
+	 */
 	
 	public enum Round{
 		

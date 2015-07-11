@@ -8,7 +8,16 @@ import org.bukkit.entity.Player;
 
 public class Messages {
 	
+	/*
+	 * Default prefix
+	 */
+	
 	public static String prefix = ChatColor.YELLOW + "[FunGames] " + ChatColor.GREEN;
+	
+	
+	/*
+	 * Messages to send to one or more players
+	 */
 	
 	public static void gameIsFull(Player p){
 		

@@ -18,13 +18,16 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 
 public class ChickenSearchGame extends Game{
 
+	/*
+	 * Variables
+	 */
+	
 	private List<Location> spawnlocations = new ArrayList<Location>();
 	private HashMap<Chicken, Location> chickens = new HashMap<Chicken, Location>();
 	
@@ -40,8 +43,16 @@ public class ChickenSearchGame extends Game{
 	
 	private ItemStack stick;
 	
+	/*
+	 * Default constructor
+	 */
+	
 	public ChickenSearchGame(){
 		super(GameType.CHICKEN_SEARCH);
+		
+		/*
+		 * Load chicken spawn locations
+		 */
 		
 		Location loc1 = new Location(Bukkit.getWorld("world"),-638,88,-235);
 		Location loc2 = new Location(Bukkit.getWorld("world"),-648,90,-235);
@@ -65,6 +76,10 @@ public class ChickenSearchGame extends Game{
 		spawnlocations.add(loc9);
 		spawnlocations.add(loc10);
 		
+		/*
+		 * Load the stick item
+		 */
+		
 		stick = new ItemStack(Material.BLAZE_ROD);
 		stick.addUnsafeEnchantment(Enchantment.KNOCKBACK, 2);
 		ItemMeta meta = stick.getItemMeta();
@@ -72,6 +87,10 @@ public class ChickenSearchGame extends Game{
 		stick.setItemMeta(meta);
 	}
 
+	/*
+	 * Teleport all players to their spawns
+	 */
+	
 	@Override
 	public void teleportToSpawns() {
 		
@@ -80,6 +99,10 @@ public class ChickenSearchGame extends Game{
 		
 	}
 
+	/*
+	 * Give the players the items
+	 */
+	
 	@Override
 	public void fillInventories() {
 		
@@ -93,6 +116,10 @@ public class ChickenSearchGame extends Game{
 		
 	}
 
+	/*
+	 * Excetuted on game start when the waiting period ended
+	 */
+	
 	@SuppressWarnings("deprecation")
 	@Override
 	public void begin() {
@@ -106,6 +133,10 @@ public class ChickenSearchGame extends Game{
 				
 				if(spawns == 0)return;
 				
+				/*
+				 * Spawn a egg at a random location from the list
+				 */
+				
 				Location eggSpawn = spawnlocations.get(r.nextInt(spawnlocations.size()));
 				
 				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
@@ -118,6 +149,10 @@ public class ChickenSearchGame extends Game{
 					}
 				});
 				
+				/*
+				 * wait 90 ticks and change the item to a real chicken
+				 */
+				
 				Bukkit.getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
 					
 					@Override
@@ -128,9 +163,9 @@ public class ChickenSearchGame extends Game{
 							@Override
 							public void run() {
 								
+								Chicken chicken = (Chicken) Bukkit.getWorld("world").spawnEntity(currentItem.getLocation(), EntityType.CHICKEN);
+								chickens.put(chicken, currentItem.getLocation());
 								currentItem.remove();
-								Chicken chicken = (Chicken) Bukkit.getWorld("world").spawnEntity(eggSpawn, EntityType.CHICKEN);
-								chickens.put(chicken, eggSpawn);
 								
 							}
 						});
@@ -143,6 +178,10 @@ public class ChickenSearchGame extends Game{
 			
 			
 		}, 0, 100);
+		
+		/*
+		 * Freeze all the spawned chickens
+		 */
 		
 		Bukkit.getScheduler().scheduleAsyncRepeatingTask(plugin, new Runnable() {
 			
@@ -160,8 +199,17 @@ public class ChickenSearchGame extends Game{
 		
 	}
 
+	/*
+	 * Executed when the game ended
+	 */
+	
 	@Override
 	public void end() {
+		
+		/*
+		 * Check which player won the game and broadcast
+		 */
+		
 		if(scorePlayer1 > scorePlayer2){
 			
 			broadcastToPlayers(Messages.prefix + Bukkit.getPlayer(plugin.getPlayers().getPlayer1()).getName() + " hat das Spiel gewonnen!");
@@ -174,11 +222,21 @@ public class ChickenSearchGame extends Game{
 			
 		}
 		
+		/*
+		 * Remove all chickens
+		 */
+		
 		for(Chicken chicken : chickens.keySet()){
 			
 			chicken.remove();
 			
 		}
+		
+		chickens.clear();
+		
+		/*
+		 * Start the snowball game
+		 */
 		
 		if(plugin.getPlayers().isFull()){
 			
@@ -189,10 +247,18 @@ public class ChickenSearchGame extends Game{
 		
 	}
 
+	/*
+	 * Get the chickens
+	 */
+	
 	public HashMap<Chicken, Location> getChickens() {
 		return chickens;
 	}
 
+	/*
+	 * Initialize the scoreboard
+	 */
+	
 	@Override
 	public void initScoreboard() {
 		Objective obj = scoreboard.registerNewObjective("fungames", "sb");
@@ -209,6 +275,10 @@ public class ChickenSearchGame extends Game{
 		Bukkit.getPlayer(plugin.getPlayers().getPlayer2()).setScoreboard(scoreboard);
 		
 	}
+	
+	/*
+	 * Update the scoreboard
+	 */
 
 	@Override
 	public void updateScoreboard() {

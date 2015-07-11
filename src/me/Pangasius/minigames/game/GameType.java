@@ -2,6 +2,10 @@ package me.Pangasius.minigames.game;
 
 public enum GameType {
 	
-	CHICKEN_SEARCH, SNOWBALL_FIGHT, SUPER_MARIO;
+	/*
+	 * Two differnt types of games
+	 */
+	
+	CHICKEN_SEARCH, SNOWBALL_FIGHT;
 
 }

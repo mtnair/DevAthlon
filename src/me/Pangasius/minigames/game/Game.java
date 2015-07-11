@@ -1,16 +1,20 @@
 package me.Pangasius.minigames.game;
 
+import me.Pangasius.minigames.Locations;
+import me.Pangasius.minigames.Main;
+import me.Pangasius.minigames.Messages;
+
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Scoreboard;
 
-import me.Pangasius.minigames.Locations;
-import me.Pangasius.minigames.Main;
-import me.Pangasius.minigames.Messages;
-
 public abstract class Game {
+	
+	/*
+	 * Variables
+	 */
 	
 	private GameType type;
 	public Main plugin = Main.getMain();
@@ -20,6 +24,10 @@ public abstract class Game {
 	
 	public Scoreboard scoreboard;
 	
+	/*
+	 * Constructor
+	 */
+	
 	public Game(GameType type){
 		
 		this.type = type;
@@ -28,6 +36,10 @@ public abstract class Game {
 		
 	}
 	
+	/*
+	 * Executed on games start
+	 */
+	
 	@SuppressWarnings("deprecation")
 	public void start(){
 		
@@ -35,6 +47,10 @@ public abstract class Game {
 		initScoreboard();
 		clearInventories();
 		fillInventories();
+		
+		/*
+		 * Start the waiting period
+		 */
 		
 		waitingPeriodScheduler = Bukkit.getScheduler().scheduleAsyncRepeatingTask(plugin, new Runnable() {
 			
@@ -71,6 +87,10 @@ public abstract class Game {
 		
 	}
 	
+	/*
+	 * Executed when the game stopped
+	 */
+	
 	public void stop(){
 		
 		running = false;
@@ -83,6 +103,10 @@ public abstract class Game {
 		end();
 		
 	}
+	
+	/*
+	 * Method to teleport all players back to the lobby
+	 */
 	
 	public void teleportPlayersToLobby(){
 		
@@ -98,11 +122,19 @@ public abstract class Game {
 	public abstract void initScoreboard();
 	public abstract void updateScoreboard();
 	
+	/*
+	 * Returns the type of the game
+	 */
+	
 	public GameType getType(){
 		
 		return type;
 		
 	}
+	
+	/*
+	 * Getters to get the state of the game
+	 */
 	
 	public boolean isRunning(){
 		
@@ -116,12 +148,20 @@ public abstract class Game {
 		
 	}
 	
+	/*
+	 * Broadcast a message to all players
+	 */
+	
 	public void broadcastToPlayers(String message){
 		
-		Bukkit.getPlayer(plugin.getPlayers().getPlayer1()).sendMessage(message);
-		Bukkit.getPlayer(plugin.getPlayers().getPlayer2()).sendMessage(message);
+		if(plugin.getPlayers().getPlayer1() != null) Bukkit.getPlayer(plugin.getPlayers().getPlayer1()).sendMessage(message);
+		if(plugin.getPlayers().getPlayer2() != null) Bukkit.getPlayer(plugin.getPlayers().getPlayer2()).sendMessage(message);
 		
 	}
+	
+	/*
+	 * Clear the player's inventories and change their gamemode
+	 */
 	
 	public void clearInventories(){
 		
