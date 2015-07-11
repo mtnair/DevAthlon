@@ -17,8 +17,8 @@ public class Locations{
 	private static Location snowballFightSpawn1;
 	private static Location snowballFightSpawn2;
 	
-	private static Location superMarioSpawn1;
-	private static Location superMarioSpawn2;
+	private static Location rageJumpSpawn1;
+	private static Location rageJumpSpawn2;
 	
 	static{
 		
@@ -37,6 +37,9 @@ public class Locations{
 			
 			snowballFightSpawn1 = new Location(Bukkit.getWorld("world"), 20.5, 81, -142.5);
 			snowballFightSpawn2 = new Location(Bukkit.getWorld("world"), 20.5, 81, -151.5);
+			
+			rageJumpSpawn1 = new Location(Bukkit.getWorld("world"), -351, 87, 240);
+			rageJumpSpawn2 = new Location(Bukkit.getWorld("world"), -329, 87, 240);
 			
 		}
 		
@@ -76,15 +79,15 @@ public class Locations{
 		
 	}
 
-	public static Location getSuperMarioSpawn1() {
+	public static Location getRageJumpSpawn1() {
 		
-		return superMarioSpawn1;
+		return rageJumpSpawn1;
 		
 	}
 
-	public static Location getSuperMarioSpawn2() {
+	public static Location getRageJumpSpawn2() {
 		
-		return superMarioSpawn2;
+		return rageJumpSpawn2;
 		
 	}
 

@@ -39,12 +39,16 @@ public class Stats {
 	
 	public void addChickensGames(UUID uuid){
 		
+		checkStats(uuid);
+		
 		stats.set(uuid.toString() + ".chickens_games", getChickensGames(uuid) + 1);
 		saveStats();
 		
 	}
 	
 	public void addChickensWins(UUID uuid){
+		
+		checkStats(uuid);
 		
 		stats.set(uuid.toString() + ".chickens_wins", getChickensWins(uuid) + 1);
 		saveStats();
@@ -53,12 +57,16 @@ public class Stats {
 	
 	public void addChickensFound(UUID uuid){
 		
+		checkStats(uuid);
+		
 		stats.set(uuid.toString() + ".chickens_found", getChickensFound(uuid) + 1);
 		saveStats();
 		
 	}
 	
 	public void addSnowballGames(UUID uuid){
+		
+		checkStats(uuid);
 		
 		stats.set(uuid.toString() + ".snowball_games", getSnowballGames(uuid) + 1);
 		saveStats();
@@ -67,6 +75,8 @@ public class Stats {
 	
 	public void addSnowballWins(UUID uuid){
 		
+		checkStats(uuid);
+		
 		stats.set(uuid.toString() + ".snowball_wins", getSnowballWins(uuid) + 1);
 		saveStats();
 		
@@ -74,7 +84,27 @@ public class Stats {
 	
 	public void addSnowballFired(UUID uuid){
 		
+		checkStats(uuid);
+		
 		stats.set(uuid.toString() + ".snowball_fired", getSnowballFired(uuid) + 1);
+		saveStats();
+		
+	}
+	
+	public void addRageJumpGames(UUID uuid){
+		
+		checkStats(uuid);
+		
+		stats.set(uuid.toString() + ".ragejump_games", getRageJumpGames(uuid) + 1);
+		saveStats();
+		
+	}
+	
+	public void addRageJumpWins(UUID uuid){
+		
+		checkStats(uuid);
+		
+		stats.set(uuid.toString() + ".ragejump_wins", getRageJumpWins(uuid) + 1);
 		saveStats();
 		
 	}
@@ -87,19 +117,31 @@ public class Stats {
 		
 		checkStats(target);
 		
+		for(int i = 0; i < 5; i++){
+			who.sendMessage(" ");
+		}
+		
 		who.sendMessage("§aStatistik von §e" + Bukkit.getOfflinePlayer(target).getName());
 		
-		who.sendMessage(" ");
+		who.sendMessage("§e---------------------------------------- ");
 		
-		who.sendMessage("§aChickenSearch-Games-Played: " + getChickensGames(target));
-		who.sendMessage("§aChickenSearch-Games-Won: " + getChickensWins(target));
-		who.sendMessage("§aChickenSearch-Chickens-Found: " + getChickensFound(target));
+		who.sendMessage("§8>> §eChickenSearch:");
+		who.sendMessage("     §8>> §eGames played: §a" + getChickensGames(target));
+		who.sendMessage("     §8>> §eGames won: §a" + getChickensWins(target));
+		who.sendMessage("     §8>> §eChickens found:§a " + getChickensFound(target));
 		
-		who.sendMessage(" ");
+		who.sendMessage("§e---------------------------------------- ");
 		
-		who.sendMessage("§aSnowballFight-Games-Played: " + getSnowballGames(target));
-		who.sendMessage("§aSnowballFight-Games-Won: " + getSnowballWins(target));
-		who.sendMessage("§aSnowballFight-Ball-Fired: " + getSnowballFired(target));
+		who.sendMessage("§8>> §eSnowballFight:");
+		who.sendMessage("     §8>> §eGames played: §a" + getSnowballGames(target));
+		who.sendMessage("     §8>> §eGames won: §a" + getSnowballWins(target));
+		who.sendMessage("     §8>> §eBalls fired:§a " + getSnowballFired(target));
+		
+		who.sendMessage("§e---------------------------------------- ");
+		
+		who.sendMessage("§8>> §eRageJump:");
+		who.sendMessage("     §8>> §eGames played: §a" + getRageJumpGames(target));
+		who.sendMessage("     §8>> §eGames won: §a" + getRageJumpWins(target));
 		
 	}
 	
@@ -155,6 +197,22 @@ public class Stats {
 		
 	}
 	
+	private int getRageJumpGames(UUID uuid){
+		
+		checkStats(uuid);
+		
+		return stats.getInt(uuid.toString() + ".ragejump_games");
+		
+	}
+
+	private int getRageJumpWins(UUID uuid){
+	
+		checkStats(uuid);
+	
+		return stats.getInt(uuid.toString() + ".ragejump_wins");
+	
+	}
+	
 	/*
 	 * Create empty stats if the player hasn't played already
 	 */
@@ -169,6 +227,8 @@ public class Stats {
 			stats.set(uuid.toString() + ".snowball_games", 0);
 			stats.set(uuid.toString() + ".snowball_wins", 0);
 			stats.set(uuid.toString() + ".snowball_fired", 0);
+			stats.set(uuid.toString() + ".ragejump_games", 0);
+			stats.set(uuid.toString() + ".ragejump_wins", 0);
 			
 			saveStats();
 			

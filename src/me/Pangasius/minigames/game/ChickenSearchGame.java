@@ -268,14 +268,14 @@ public class ChickenSearchGame extends Game{
 		if(scorePlayer1 > scorePlayer2){
 			
 			broadcastToPlayers(Messages.prefix + Bukkit.getPlayer(plugin.getPlayers().getPlayer1()).getName() + " hat das Spiel gewonnen!");
-			broadcastToPlayers(Messages.prefix + "Endstand: " + scorePlayer1 + ":" + scorePlayer2);
+			broadcastToPlayers(Messages.prefix + "Das Spiel 'ChickenSearch' endete  " + scorePlayer1 + ":" + scorePlayer2);
 			
 			plugin.getStats().addChickensWins(plugin.getPlayers().getPlayer1());
 			
 		}else{
 			
 			broadcastToPlayers(Messages.prefix + Bukkit.getPlayer(plugin.getPlayers().getPlayer2()).getName() + " hat das Spiel gewonnen!");
-			broadcastToPlayers(Messages.prefix + "Endstand: " + scorePlayer1 + ":" + scorePlayer2);
+			broadcastToPlayers(Messages.prefix + "Das Spiel 'ChickenSearch' endete  " + scorePlayer1 + ":" + scorePlayer2);
 			
 			plugin.getStats().addChickensWins(plugin.getPlayers().getPlayer2());
 			

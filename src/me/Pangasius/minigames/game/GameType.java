@@ -6,6 +6,6 @@ public enum GameType {
 	 * Two differnt types of games
 	 */
 	
-	CHICKEN_SEARCH, SNOWBALL_FIGHT, LOGO_QUIZ;
+	CHICKEN_SEARCH, SNOWBALL_FIGHT, RAGE_JUMP;
 
 }

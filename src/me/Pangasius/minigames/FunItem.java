@@ -27,7 +27,7 @@ public class FunItem {
 	
 	public static void giveItem(Player p){
 		
-		p.getInventory().setItem(4, item);
+		p.getInventory().setItem(4, getItem());
 		
 	}
 	

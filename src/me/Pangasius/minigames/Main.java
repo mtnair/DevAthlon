@@ -5,6 +5,8 @@ import me.Pangasius.minigames.game.ChickenSearchGame;
 import me.Pangasius.minigames.game.EventListener;
 import me.Pangasius.minigames.game.Game;
 import me.Pangasius.minigames.game.Players;
+import me.Pangasius.minigames.game.RageJumpGame;
+import me.Pangasius.minigames.game.SnowballFightGame;
 import me.Pangasius.minigames.stats.Stats;
 
 import org.bukkit.entity.Chicken;
@@ -65,7 +67,11 @@ public class Main extends JavaPlugin{
 			game.getChickens().clear();
 			
 		}
-		currentGame.stop();
+		try{
+			
+			currentGame.stop();
+			
+		}catch(Exception e){}
 		
 	}
 	

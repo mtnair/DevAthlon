@@ -109,21 +109,25 @@ public class SnowballFightGame extends Game{
 		if(winsPlayer1 > winsPlayer2){
 			
 			broadcastToPlayers(Messages.prefix + Bukkit.getPlayer(plugin.getPlayers().getPlayer1()).getName() + " hat das Spiel gewonnen!");
-			broadcastToPlayers(Messages.prefix + "Endstand: " + winsPlayer1 + ":" + winsPlayer2);
+			broadcastToPlayers(Messages.prefix + "Das Spiel 'SnowballFight' endete " + winsPlayer1 + ":" + winsPlayer2);
 			
 			plugin.getStats().addSnowballWins(plugin.getPlayers().getPlayer1());
 			
 		}else{
 			
 			broadcastToPlayers(Messages.prefix + Bukkit.getPlayer(plugin.getPlayers().getPlayer2()).getName() + " hat das Spiel gewonnen!");
-			broadcastToPlayers(Messages.prefix + "Endstand: " + winsPlayer1 + ":" + winsPlayer2);
+			broadcastToPlayers(Messages.prefix + "Das Spiel 'SnowballFight' endete " + winsPlayer1 + ":" + winsPlayer2);
 			
 			plugin.getStats().addSnowballWins(plugin.getPlayers().getPlayer2());
 			
 		}
 		
-		plugin.setGame(new ChickenSearchGame());
-		plugin.getPlayers().clear();
+		if(plugin.getPlayers().isFull()){
+			
+			plugin.setGame(new RageJumpGame());
+			plugin.getGame().start();
+			
+		}
 		
 	}
 
@@ -135,7 +139,7 @@ public class SnowballFightGame extends Game{
 	public void initScoreboard() {
 		Objective obj = scoreboard.registerNewObjective("fungames", "sb");
 		obj.setDisplaySlot(DisplaySlot.SIDEBAR);
-		obj.setDisplayName("§aCHICKENSEARCH");
+		obj.setDisplayName("§aSNOWBALLFIGHT");
 		
 		scoreboardPlayer1 = obj.getScore(Bukkit.getPlayer(plugin.getPlayers().getPlayer1()).getName());
 		scoreboardPlayer1.setScore(winsPlayer1);
@@ -159,16 +163,6 @@ public class SnowballFightGame extends Game{
 		
 		Bukkit.getPlayer(plugin.getPlayers().getPlayer1()).setScoreboard(scoreboard);
 		Bukkit.getPlayer(plugin.getPlayers().getPlayer2()).setScoreboard(scoreboard);
-		
-	}
-	
-	/*
-	 * Enum the check which round the game is currently in
-	 */
-	
-	public enum Round{
-		
-		ROUND1, ROUND2, ROUND3;
 		
 	}
 

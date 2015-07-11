@@ -4,16 +4,19 @@ import me.Pangasius.minigames.FunItem;
 import me.Pangasius.minigames.Locations;
 import me.Pangasius.minigames.Main;
 import me.Pangasius.minigames.Messages;
-import me.Pangasius.minigames.game.SnowballFightGame.Round;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Effect;
+import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Chicken;
 import org.bukkit.entity.Egg;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.Ocelot;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -28,12 +31,14 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -52,7 +57,7 @@ public class EventListener implements Listener{
 	@EventHandler
 	public void onPlayerMove(PlayerMoveEvent e){
 		
-		if(!plugin.gameIsRunning()){
+		if(!plugin.getGame().isRunning() && !plugin.getGame().isWaitingPeriod()){
 			
 			/*
 			 * Teleport players back when they fall out of spawn
@@ -120,6 +125,24 @@ public class EventListener implements Listener{
 				}else if(game.round == Round.ROUND3){
 					
 					game.stop();
+					
+				}
+				
+			}
+			
+		}
+		
+		if(plugin.getGame() instanceof RageJumpGame && plugin.getGame().isRunning() && plugin.getPlayers().isPlaying(e.getPlayer())){
+			
+			if(e.getTo().getY() <= 77){
+				
+				if(plugin.getPlayers().getPlayer1() == e.getPlayer().getUniqueId()){
+					
+					Bukkit.getPlayer(plugin.getPlayers().getPlayer1()).teleport(Locations.getRageJumpSpawn1());
+					
+				}else{
+					
+					Bukkit.getPlayer(plugin.getPlayers().getPlayer2()).teleport(Locations.getRageJumpSpawn2());
 					
 				}
 				
@@ -223,7 +246,7 @@ public class EventListener implements Listener{
 		chicken.remove();
 		game.updateScoreboard();
 		
-		if(game.spawns == 0){
+		if(game.getChickens().size() == 0 && game.spawns == 0){
 			
 			game.stop();
 			
@@ -260,12 +283,12 @@ public class EventListener implements Listener{
 	
 	@EventHandler
 	public void onBlockBreak(BlockBreakEvent e){
-		if(plugin.getPlayers().isPlaying(e.getPlayer()))e.setCancelled(true);
+		e.setCancelled(true);
 	}
 	
 	@EventHandler
 	public void onBlockPlace(BlockPlaceEvent e){
-		if(plugin.getPlayers().isPlaying(e.getPlayer()))e.setCancelled(true);
+		e.setCancelled(true);
 	}
 	
 	/*
@@ -275,6 +298,11 @@ public class EventListener implements Listener{
 	@EventHandler
 	public void onItemPickup(PlayerPickupItemEvent e){
 		if(plugin.getPlayers().isPlaying(e.getPlayer()))e.setCancelled(true);
+	}
+	
+	@EventHandler
+	public void onItemDrop(PlayerDropItemEvent e){
+		e.setCancelled(true);
 	}
 	
 	/*
@@ -290,6 +318,12 @@ public class EventListener implements Listener{
 		if(e.getCause() == DamageCause.FALL){
 			
 			e.setDamage(0);
+			e.setCancelled(true);
+			
+		}
+		
+		if(!plugin.getGame().isRunning() && !plugin.getGame().isWaitingPeriod()){
+			
 			e.setCancelled(true);
 			
 		}
@@ -367,9 +401,9 @@ public class EventListener implements Listener{
 		
 		if(e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK){
 			
-			if(e.getPlayer().getItemInHand() == FunItem.getItem()){
+			if(e.getPlayer().getItemInHand().hasItemMeta() && e.getPlayer().getItemInHand().getItemMeta().hasDisplayName() && e.getPlayer().getItemInHand().getItemMeta().getDisplayName().equalsIgnoreCase("§5FunGun")){
 				
-				Projectile p = e.getPlayer().launchProjectile(Egg.class);
+				Projectile p = e.getPlayer().launchProjectile(Arrow.class);
 				p.setCustomName("CatSpawnEgg");
 				p.setCustomNameVisible(false);				
 			}
@@ -382,9 +416,9 @@ public class EventListener implements Listener{
 	@EventHandler
 	public void onSpawnerEggHit(ProjectileHitEvent e){
 		
-		if(!(e.getEntity() instanceof Egg)) return;
+		if(!(e.getEntity() instanceof Arrow)) return;
 		
-		if(e.getEntity().getCustomName().equalsIgnoreCase("CatSpawnEgg")){
+		if(e.getEntity().getCustomName() != null && e.getEntity().getCustomName().equalsIgnoreCase("CatSpawnEgg")){
 			
 			Ocelot oc = (Ocelot) e.getEntity().getWorld().spawnEntity(e.getEntity().getLocation(), EntityType.OCELOT);
 			
@@ -397,12 +431,70 @@ public class EventListener implements Listener{
 				public void run() {
 					
 					
-					oc.getWorld().playEffect(oc.getLocation(), Effect.EXPLOSION_HUGE, 1);
+					oc.getWorld().spigot().playEffect(oc.getLocation(), Effect.LAVA_POP, 0, 0, 2, 2, 2, 3, 20, 2);
 					oc.remove();
 					
 					
 				}
 			}, 50);
+			
+			e.getEntity().remove();
+			
+		}
+		
+	}
+	
+	@EventHandler
+	public void onPlayerInteractRageJump(PlayerInteractEvent e){
+		
+		if(plugin.getGame() instanceof RageJumpGame && plugin.getGame().isRunning() && plugin.getPlayers().isPlaying(e.getPlayer())){
+			
+			RageJumpGame game = (RageJumpGame) plugin.getGame();
+			
+			if(e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_BLOCK){
+				
+				if(e.getClickedBlock().getType() == Material.GOLD_BLOCK){
+					
+					if(e.getPlayer().getUniqueId() == plugin.getPlayers().getPlayer1()){
+						
+						game.winsPlayer1++;
+						
+					}else{
+						
+						game.winsPlayer2++;
+						
+					}
+					
+					game.broadcastToPlayers(Messages.prefix + e.getPlayer().getName() + " hat das Zeil erreicht!");
+					
+					Firework fw = (Firework) Bukkit.getWorld("world").spawn(e.getClickedBlock().getLocation(), Firework.class);
+					FireworkMeta meta = fw.getFireworkMeta();
+					meta.addEffect(FireworkEffect.builder().withColor(Color.RED).trail(true).flicker(true).build());
+					fw.setFireworkMeta(meta);
+					
+					if(game.round == Round.ROUND1){
+						game.round = Round.ROUND2;
+						game.teleportToSpawns();
+						game.clearInventories();
+						game.fillInventories();
+						game.updateScoreboard();
+						
+						
+						
+					}else if(game.round == Round.ROUND2){
+						game.round = Round.ROUND3;
+						game.teleportToSpawns();
+						game.clearInventories();
+						game.fillInventories();
+						game.updateScoreboard();
+					}else if(game.round == Round.ROUND3){
+						game.stop();
+					}
+					
+				}
+				
+			}
+			
 			
 		}
 		
@@ -415,6 +507,12 @@ public class EventListener implements Listener{
 	private boolean moved(Location from, Location to){
 		
 		return (from.getX() != to.getX()) || (from.getY() != to.getY()) || (from.getZ() != to.getZ());
+		
+	}
+	
+	private boolean equals(Location loc1, Location loc2){
+		
+		return loc1.getBlockX() == loc2.getBlockX() && loc1.getBlockY() == loc2.getBlockY() && loc1.getBlockZ() == loc2.getBlockZ();
 		
 	}
 
