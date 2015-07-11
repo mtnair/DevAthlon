@@ -5,7 +5,9 @@ import me.Pangasius.minigames.game.ChickenSearchGame;
 import me.Pangasius.minigames.game.EventListener;
 import me.Pangasius.minigames.game.Game;
 import me.Pangasius.minigames.game.Players;
+import me.Pangasius.minigames.stats.Stats;
 
+import org.bukkit.entity.Chicken;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin{
@@ -18,6 +20,8 @@ public class Main extends JavaPlugin{
 	
 	private Players players;
 	private Game currentGame;
+	private Stats stats;
+	
 	private boolean ingame = false;
 	
 	/*
@@ -31,6 +35,7 @@ public class Main extends JavaPlugin{
 		
 		players = new Players();
 		currentGame = new ChickenSearchGame();
+		stats = new Stats();
 		
 		getConfig().options().copyDefaults(true);
 		saveConfig();
@@ -46,6 +51,21 @@ public class Main extends JavaPlugin{
 	
 	@Override
 	public void onDisable() {
+		
+		if(currentGame instanceof ChickenSearchGame){
+			
+			ChickenSearchGame game = (ChickenSearchGame) currentGame;
+			
+			for(Chicken chicken : game.getChickens().keySet()){
+				
+				chicken.remove();
+				
+			}
+			
+			game.getChickens().clear();
+			
+		}
+		currentGame.stop();
 		
 	}
 	
@@ -76,6 +96,12 @@ public class Main extends JavaPlugin{
 	public Game getGame(){
 		
 		return currentGame;
+		
+	}
+	
+	public Stats getStats(){
+		
+		return stats;
 		
 	}
 	

@@ -32,7 +32,7 @@ public class Locations{
 			lobbySpawn.setYaw(180);
 			lobbySpawn.setPitch(0);
 			
-			chickenSearchSpawn1 = new Location(Bukkit.getWorld("world"), -643.5, 101, -225.5);
+			chickenSearchSpawn1 = new Location(Bukkit.getWorld("world"), -643.5, 88, -225.5);
 			chickenSearchSpawn2 = chickenSearchSpawn1;
 			
 			snowballFightSpawn1 = new Location(Bukkit.getWorld("world"), 20.5, 81, -142.5);

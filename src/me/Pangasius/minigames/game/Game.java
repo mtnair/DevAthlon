@@ -1,5 +1,6 @@
 package me.Pangasius.minigames.game;
 
+import me.Pangasius.minigames.FunItem;
 import me.Pangasius.minigames.Locations;
 import me.Pangasius.minigames.Main;
 import me.Pangasius.minigames.Messages;
@@ -21,6 +22,7 @@ public abstract class Game {
 	private int waitingPeriod = 6;
 	private boolean running = false;
 	private int waitingPeriodScheduler;
+	private boolean isWaitingPeriod = false;
 	
 	public Scoreboard scoreboard;
 	
@@ -46,11 +48,12 @@ public abstract class Game {
 		teleportToSpawns();
 		initScoreboard();
 		clearInventories();
-		fillInventories();
 		
 		/*
 		 * Start the waiting period
 		 */
+		
+		isWaitingPeriod = true;
 		
 		waitingPeriodScheduler = Bukkit.getScheduler().scheduleAsyncRepeatingTask(plugin, new Runnable() {
 			
@@ -73,6 +76,7 @@ public abstract class Game {
 					
 					broadcastToPlayers(Messages.prefix + " Das Spiel startet jetzt!");
 					running = true;
+					isWaitingPeriod = false;
 					begin();
 					fillInventories();
 					
@@ -100,6 +104,9 @@ public abstract class Game {
 		if(plugin.getPlayers().getPlayer1() != null) Bukkit.getPlayer(plugin.getPlayers().getPlayer1()).getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
 		if(plugin.getPlayers().getPlayer2() != null) Bukkit.getPlayer(plugin.getPlayers().getPlayer2()).getScoreboard().clearSlot(DisplaySlot.SIDEBAR);
 		scoreboard.clearSlot(DisplaySlot.SIDEBAR);
+		
+		Bukkit.getScheduler().cancelTasks(plugin);
+		
 		end();
 		
 	}
@@ -113,6 +120,9 @@ public abstract class Game {
 		if(plugin.getPlayers().getPlayer1() != null) Bukkit.getPlayer(plugin.getPlayers().getPlayer1()).teleport(Locations.getLobbySpawn());
 		if(plugin.getPlayers().getPlayer2() != null) Bukkit.getPlayer(plugin.getPlayers().getPlayer2()).teleport(Locations.getLobbySpawn());
 		
+		if(plugin.getPlayers().getPlayer1() != null) FunItem.giveItem(Bukkit.getPlayer(plugin.getPlayers().getPlayer1()));
+		if(plugin.getPlayers().getPlayer2() != null) FunItem.giveItem(Bukkit.getPlayer(plugin.getPlayers().getPlayer2()));
+			
 	}
 	
 	public abstract void teleportToSpawns();
@@ -144,7 +154,7 @@ public abstract class Game {
 	
 	public boolean isWaitingPeriod(){
 		
-		return waitingPeriod > 0 && waitingPeriod < 6;
+		return isWaitingPeriod;
 		
 	}
 	

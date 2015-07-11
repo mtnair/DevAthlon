@@ -13,17 +13,29 @@ import org.bukkit.entity.Player;
 
 public class Stats {
 
+	/*
+	 * Variables
+	 */
+	
 	private Main plugin = Main.getMain();
 	
 	private FileConfiguration stats;
 	private File file;
 	
+	/*
+	 * Default constructor
+	 */
+	
 	public Stats(){
 		
-		file = new File(plugin.getDataFolder() + "stats.yml");
+		file = new File(plugin.getDataFolder(), "stats.yml");
 		stats = YamlConfiguration.loadConfiguration(file);
 		
 	}
+	
+	/*
+	 * Methods to increase the stats for the given player
+	 */
 	
 	public void addChickensGames(UUID uuid){
 		
@@ -67,7 +79,13 @@ public class Stats {
 		
 	}
 	
+	/*
+	 * Show the stats of the given UUID to the given player
+	 */
+	
 	public void showStats(Player who, UUID target){
+		
+		checkStats(target);
 		
 		who.sendMessage("§aStatistik von §e" + Bukkit.getOfflinePlayer(target).getName());
 		
@@ -85,11 +103,15 @@ public class Stats {
 		
 	}
 	
+	/*
+	 * Methods to get the current stats of the given UUID
+	 */
+	
 	private int getChickensGames(UUID uuid){
 		
 		checkStats(uuid);
 		
-		return stats.getInt(uuid.toString() + ".chkickens_games");
+		return stats.getInt(uuid.toString() + ".chickens_games");
 		
 	}
 	
@@ -97,7 +119,7 @@ public class Stats {
 		
 		checkStats(uuid);
 		
-		return stats.getInt(uuid.toString() + ".chkickens_wins");
+		return stats.getInt(uuid.toString() + ".chickens_wins");
 		
 	}
 	
@@ -105,7 +127,7 @@ public class Stats {
 		
 		checkStats(uuid);
 		
-		return stats.getInt(uuid.toString() + ".chkickens_found");
+		return stats.getInt(uuid.toString() + ".chickens_found");
 		
 	}
 	
@@ -133,9 +155,13 @@ public class Stats {
 		
 	}
 	
+	/*
+	 * Create empty stats if the player hasn't played already
+	 */
+	
 	private void checkStats(UUID uuid){
 		
-		if(stats.getString(uuid.toString()) == null){
+		if(stats.getString(uuid.toString() + ".chickens_games") == null){
 			
 			stats.set(uuid.toString() + ".chickens_games", 0);
 			stats.set(uuid.toString() + ".chickens_wins", 0);
@@ -149,6 +175,10 @@ public class Stats {
 		}
 		
 	}
+	
+	/*
+	 * Save the stats.yml file
+	 */
 	
 	private void saveStats(){
 		

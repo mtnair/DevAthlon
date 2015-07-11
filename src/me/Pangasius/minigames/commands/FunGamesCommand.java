@@ -3,7 +3,7 @@ package me.Pangasius.minigames.commands;
 import me.Pangasius.minigames.Main;
 import me.Pangasius.minigames.Messages;
 
-import org.bukkit.ChatColor;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -21,6 +21,7 @@ public class FunGamesCommand implements CommandExecutor{
 	 * Command executor
 	 */
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		
@@ -101,12 +102,12 @@ public class FunGamesCommand implements CommandExecutor{
 			
 			if(args.length == 1){
 				
-				player.sendMessage(ChatColor.GREEN + "Deine Statistik:");
+				plugin.getStats().showStats(player, player.getUniqueId());
 				return true;
 				
 			}
 			
-			player.sendMessage(ChatColor.GREEN + "Die Statistik von " + args[1] + ":");
+			plugin.getStats().showStats(player, Bukkit.getOfflinePlayer(args[1]).getUniqueId());
 			return true;
 			
 		}
